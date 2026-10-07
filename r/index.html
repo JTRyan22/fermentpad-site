@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥒</text></svg>">
+<title>A recipe shared from FermentPad</title>
+<meta name="description" content="Someone shared a fermenting or pickling recipe with you from FermentPad.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<main class="board">
+  <div class="panel" id="panel">
+    <p>Loading recipe…</p>
+  </div>
+</main>
+<script src="/assets/config.js"></script>
+<script>
+// The recipe travels inside the link itself, after the "#". That part of a
+// link is never sent to this website, so the recipe is only read here, in
+// the visitor's browser, and never stored anywhere.
+(function () {
+  var panel = document.getElementById("panel");
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function getAppBlock(text) {
+    var block = el("div", "get-app");
+    block.appendChild(el("p", null, text));
+    var stores = el("div", "stores");
+    block.appendChild(stores);
+    return block;
+  }
+
+  function finish() {
+    var s = document.createElement("script");
+    s.src = "/assets/stores.js";
+    document.body.appendChild(s);
+  }
+
+  function showMessage(title, body) {
+    panel.innerHTML = "";
+    var wrap = el("div", "message");
+    wrap.appendChild(el("h1", null, title));
+    wrap.appendChild(el("p", null, body));
+    panel.appendChild(wrap);
+    panel.appendChild(getAppBlock("FermentPad keeps your fermenting and canning recipes in one place."));
+    finish();
+  }
+
+  function decode(fragment) {
+    var b64 = fragment.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    var stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+    return new Response(stream).text().then(function (t) { return JSON.parse(t); });
+  }
+
+  function num(v, digits) {
+    var n = Number(v) || 0;
+    return n.toFixed(digits).replace(/\.0+$/, "").replace(/(\.\d*[1-9])0+$/, "$1");
+  }
+
+  function render(data) {
+    if (!data || data.type !== "fermentpad-recipe" || !data.recipe) throw new Error("bad");
+    var r = data.recipe;
+    document.title = (r.name || "Recipe") + " · shared from FermentPad";
+    panel.innerHTML = "";
+    var wrap = el("article", "recipe");
+    wrap.appendChild(el("h1", "recipe-name", r.name || "Untitled recipe"));
+    if (r.vegetable) wrap.appendChild(el("p", "recipe-veg", r.vegetable));
+
+    var rows = [];
+    var water = Number(r.waterVolumeMl) || 0;
+    var vinegar = Number(r.vinegarVolumeMl) || 0;
+    var salt = Number(r.saltGrams) || 0;
+    var sugar = Number(r.sugarGrams) || 0;
+    var veg = Number(r.vegetableWeightGrams) || 0;
+    if (water > 0) rows.push(["Water", num(water, 0) + " mL (" + num(water / 236.6, 1) + " cups)"]);
+    if (vinegar > 0) rows.push(["Vinegar", num(vinegar, 0) + " mL (" + num(vinegar / 236.6, 1) + " cups)"]);
+    if (salt > 0) {
+      var salty = num(salt, 1) + " g";
+      if (water > 0 && vinegar === 0) salty += " (" + num(salt / water * 100, 1) + "% brine)";
+      rows.push(["Salt", salty]);
+    }
+    if (sugar > 0) rows.push(["Sugar", num(sugar, 1) + " g"]);
+    if (veg > 0) rows.push(["Vegetable weight", num(veg, 0) + " g (" + num(veg / 453.6, 1) + " lb)"]);
+    rows.push(["Method", r.fermentMethod === "cold" ? "Cold ferment" : "Room temperature"]);
+    if (r.defaultReadyDays) rows.push(["Typical length", r.defaultReadyDays + (r.defaultReadyDays == 1 ? " day" : " days")]);
+
+    var dl = el("dl", "amounts");
+    rows.forEach(function (row) {
+      var d = el("div");
+      d.appendChild(el("dt", null, row[0]));
+      d.appendChild(el("dd", null, row[1]));
+      dl.appendChild(d);
+    });
+    wrap.appendChild(dl);
+
+    var ingredients = Array.isArray(data.ingredients) ? data.ingredients : [];
+    if (ingredients.length) {
+      wrap.appendChild(el("h3", null, "Also add"));
+      var ul = el("ul");
+      ingredients.forEach(function (i) {
+        if (!i || !i.name) return;
+        ul.appendChild(el("li", null, i.amount ? i.name + " (" + i.amount + ")" : i.name));
+      });
+      wrap.appendChild(ul);
+    }
+    if (r.processNotes) {
+      wrap.appendChild(el("h3", null, "How to make it"));
+      wrap.appendChild(el("p", "notes", r.processNotes));
+    }
+    wrap.appendChild(getAppBlock("Get FermentPad to save this recipe in one tap and track your own batches."));
+    panel.appendChild(wrap);
+    finish();
+  }
+
+  var fragment = location.hash.slice(1);
+  if (!fragment) {
+    showMessage("No recipe in this link", "This link is missing its recipe. Ask the person who sent it to share it again from FermentPad.");
+    return;
+  }
+  if (typeof DecompressionStream === "undefined") {
+    showMessage("Update your browser to see this recipe", "This browser is too old to open shared recipes. Try opening the link in a current version of Safari or Chrome.");
+    return;
+  }
+  decode(fragment).then(render).catch(function () {
+    showMessage("This recipe link didn't come through whole", "Part of the link may have been cut off when it was sent. Ask the person who sent it to share it again from FermentPad.");
+  });
+})();
+</script>
+</body>
+</html>

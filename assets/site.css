@@ -1,0 +1,171 @@
+/* FermentPad website — same palette, type, and cutting board as the app. */
+:root {
+  --olive: #3F5B3A;
+  --olive-deep: #2C4029;
+  --clay: #B5652E;
+  --cream: #FBF6EE;
+  --brine: #F2D7C2;
+  --ink: #2F261E;
+  --muted: #6B5E52;
+  --panel-radius: 22px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--cream);
+}
+
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--olive-deep);
+  margin: 0;
+}
+
+a { color: var(--olive); text-underline-offset: 3px; }
+a:hover { color: var(--olive-deep); }
+
+:focus-visible {
+  outline: 3px solid var(--clay);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* The cutting board: portrait photo on tall screens, the same photo turned
+   on its side on wide screens — the way it turns with the device in the app. */
+.board {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 48px);
+  background: #6b4a2e url("board.jpg") center / cover no-repeat;
+}
+@media (orientation: landscape) {
+  .board { background-image: url("board-wide.jpg"); }
+}
+
+.panel {
+  width: 100%;
+  max-width: 34rem;
+  background: var(--cream);
+  border-radius: var(--panel-radius);
+  padding: clamp(24px, 5vw, 44px);
+  box-shadow: 0 18px 50px rgba(30, 20, 10, 0.35);
+}
+
+.wordmark {
+  font-size: clamp(2.6rem, 9vw, 4rem);
+  letter-spacing: -0.02em;
+  color: var(--olive);
+}
+
+.lede {
+  font-size: 1.15rem;
+  margin: 0.75rem 0 1.75rem;
+  color: var(--ink);
+}
+
+/* Store buttons */
+.stores { display: grid; gap: 12px; }
+.store {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 20px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  background: var(--olive);
+  color: #fff;
+}
+.store:hover { background: var(--olive-deep); color: #fff; }
+.store svg { width: 22px; height: 22px; flex: none; fill: currentColor; }
+.soon {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--brine);
+  color: #3D2817;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Below the board */
+.about {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(40px, 8vw, 80px) 24px;
+}
+.about h2 { font-size: clamp(1.6rem, 4.5vw, 2.1rem); margin-bottom: 1.5rem; }
+.features { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem; }
+.features li { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; }
+.features .icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--brine);
+  display: grid; place-items: center;
+}
+.features .icon svg { width: 22px; height: 22px; fill: #3D2817; }
+.features h3 { font-size: 1.25rem; margin-bottom: 0.2rem; }
+.features p { margin: 0; color: var(--muted); }
+
+footer {
+  border-top: 1px solid rgba(63, 91, 58, 0.18);
+  padding: 28px 24px 40px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+footer a { margin: 0 0.6rem; }
+
+/* Shared recipe page */
+.recipe-name { font-size: clamp(2rem, 7vw, 2.75rem); margin-bottom: 0.25rem; }
+.recipe-veg { margin: 0 0 1.5rem; color: var(--muted); font-size: 1.1rem; }
+.amounts {
+  margin: 0 0 1.5rem;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: var(--brine);
+  color: #3D2817;
+}
+.amounts div { display: flex; justify-content: space-between; gap: 16px; padding: 3px 0; }
+.amounts dt { font-weight: 500; }
+.amounts dd { margin: 0; text-align: right; font-weight: 600; }
+.recipe h3 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+.recipe ul { margin: 0; padding-left: 1.2rem; }
+.recipe li { margin: 0.2rem 0; }
+.recipe .notes { margin: 0; white-space: pre-line; }
+.get-app {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(63, 91, 58, 0.18);
+}
+.get-app p { margin: 0 0 1rem; }
+.message h1 { font-size: 1.8rem; margin-bottom: 0.75rem; }
+.message p { margin: 0 0 1rem; }
+
+/* Privacy policy */
+.doc { max-width: 42rem; margin: 0 auto; padding: clamp(32px, 7vw, 72px) 24px; }
+.doc h1 { font-size: clamp(2rem, 6vw, 2.6rem); margin-bottom: 0.5rem; }
+.doc h2 { font-size: 1.35rem; margin: 2rem 0 0.5rem; }
+.doc p, .doc li { max-width: 68ch; }
+.doc .updated { color: var(--muted); margin-top: 0; }
+.back { display: inline-block; margin-bottom: 1.5rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel { animation: settle 500ms ease-out both; }
+  @keyframes settle { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+}
