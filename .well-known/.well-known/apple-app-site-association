@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["T7925LW687.com.jt.fermentpad"],
+        "components": [
+          { "/": "/r/*", "comment": "Shared recipe links open FermentPad" }
+        ]
+      }
+    ]
+  }
+}
