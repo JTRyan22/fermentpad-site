@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.jt.fermentpad",
+      "sha256_cert_fingerprints": [
+        "91:56:45:4F:30:CF:FB:B4:3D:4A:15:E5:C6:B5:68:A6:48:88:0B:72:0F:77:7E:78:1F:91:25:46:BB:84:2B:06"
+      ]
+    }
+  }
+]
