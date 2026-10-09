@@ -10,7 +10,11 @@
     if (cfg.appStoreUrl) {
       html += '<a class="store" href="' + cfg.appStoreUrl + '">' + apple + 'Download on the App Store</a>';
     }
-    html += '<a class="store" href="' + cfg.playStoreUrl + '">' + play + 'Get it on Google Play</a>';
+    if (cfg.playStoreLive) {
+      html += '<a class="store" href="' + cfg.playStoreUrl + '">' + play + 'Get it on Google Play</a>';
+    } else {
+      html += '<p class="soon">Coming soon to Google Play.</p>';
+    }
   } else {
     html = '<p class="soon">Coming soon to the App Store and Google Play.</p>';
   }
