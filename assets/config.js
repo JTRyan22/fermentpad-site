@@ -7,8 +7,8 @@
 //   3. when Google Play is live too, change playStoreLive to true
 // Keep these matching lib/app_links.dart in the app.
 window.FERMENTPAD = {
-  storeLinksLive: false,
-  appStoreUrl: "",
+  storeLinksLive: true,
+  appStoreUrl: "https://apps.apple.com/us/app/fermentpad/id6820594014",
   playStoreLive: false,
   playStoreUrl: "https://play.google.com/store/apps/details?id=com.jt.fermentpad",
 };
